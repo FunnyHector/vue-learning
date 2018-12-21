@@ -8,10 +8,32 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+
+  <style>
+    .my-custom-class {
+      background-color: linen;
+      color: maroon;
+    }
+
+    .classic-class {
+      background-color: maroon;
+      color: linen;
+      font-size: 50px;
+    }
+  </style>
 </head>
+
 <body>
-<div id="app" v-bind:title="title">
-  {{ message }}
+<div id="app-1" v-bind:title="title">
+  <p v-bind:class="{ 'my-custom-class': myCustomClass, 'classic-class': isClassic }">{{ message }}</p>
+  <p v-bind:class="classObject">{{ message }}</p>
+
+  <div v-if="predicate">
+    Now you see true execution
+  </div>
+  <div v-else>
+    Now you see false execution
+  </div>
 </div>
 
 <div id="app-2">
@@ -78,12 +100,47 @@
   </p>
 </div>
 
+<div id="todo-list-example">
+  <form v-on:submit.prevent="addNewToDo">
+    <label for="new-todo">Add a todo</label>
+    <input
+      v-model="newTodoText"
+      id="new-todo"
+      placeholder="E.g. Feed the cat"
+    >
+    <button>add</button>
+  </form>
+
+  <ul>
+    <li
+      is="todo-item"
+      v-for="(todo, index) in todos"
+      v-bind:key="todo.id"
+      v-bind:title="todo.title"
+      v-on:remove="todos.splice(index, 1)"
+    ></li>
+  </ul>
+</div>
+
 <script>
-  let app = new Vue({
-    el: '#app',
+  let app1 = new Vue({
+    el: '#app-1',
     data: {
       message: 'Hello Vue!',
-      title: "lalalala"
+      title: "lalalala",
+      myCustomClass: true,
+      predicate: true
+    },
+    computed: {
+      isClassic: function () {
+        return !this.myCustomClass && this.message.length === 12
+      },
+      classObject: function () {
+        return {
+          'my-custom-class': this.myCustomClass,
+          'classic-class': this.isClassic
+        }
+      }
     }
   });
 
@@ -208,6 +265,47 @@
             .catch(function (error) {
               vm.answer = 'Error! Could not reach the API. ' + error
             })
+      }
+    }
+  });
+
+  Vue.component('todo-item', {
+    template: '\
+    <li>\
+      {{ title }}\
+      <button v-on:click="$emit(\'remove\')">Remove</button>\
+    </li>\
+  ',
+    props: ['title']
+  });
+
+  let app10 = new Vue({
+    el: '#todo-list-example',
+    data: {
+      newTodoText: '',
+      todos: [
+        {
+          id: 1,
+          title: 'Do the dishes',
+        },
+        {
+          id: 2,
+          title: 'Take out the trash',
+        },
+        {
+          id: 3,
+          title: 'Mow the lawn'
+        }
+      ],
+      nextTodoId: 4
+    },
+    methods: {
+      addNewTodo: function () {
+        this.todos.push({
+          id: this.nextTodoId++,
+          title: this.newTodoText
+        })
+        this.newTodoText = ''
       }
     }
   })
