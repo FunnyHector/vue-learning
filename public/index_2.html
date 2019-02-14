@@ -72,8 +72,8 @@
   <ol>
     <todo-item
       v-for="item2 in lalalas"
-      v-bind:another="item2"
-      v-bind:key="item2.id"
+      :another="item2"
+      :key="item2.id"
     >
     </todo-item>
   </ol>
@@ -115,8 +115,8 @@
     <li
       is="todo-item"
       v-for="(todo, index) in todos"
-      v-bind:key="todo.id"
-      v-bind:title="todo.title"
+      :key="todo.id"
+      :title="todo.title"
       v-on:remove="todos.splice(index, 1)"
     ></li>
   </ul>
@@ -189,8 +189,8 @@
   });
 
   Vue.component('todo-item', {
-    template: '<li>{{  }} ++++ {{ another.text }}</li>',
-    props: ['todo', 'another']
+    template: '<li>{{ another.id }}---------{{ another.text }}</li>',
+    props: ['another']
   });
 
   let app7 = new Vue({
@@ -300,15 +300,71 @@
       nextTodoId: 4
     },
     methods: {
-      addNewTodo: function () {
+      addNewToDo: function () {
         this.todos.push({
           id: this.nextTodoId++,
           title: this.newTodoText
-        })
+        });
         this.newTodoText = ''
       }
     }
   })
 </script>
+
+<div id="test-method-call">
+  <button v-on:click="greet($event, 'Hector')">Say Hi</button>
+</div>
+<script>
+  new Vue({
+    el: '#test-method-call',
+    methods: {
+      greet (event, toWhom) {
+        alert(`Hi to ${toWhom} and ${event}!`);
+      }
+    }
+  })
+</script>
+
+<div id="model-binding">
+  <input type="checkbox" id="jack" value="xczxczxczxcJack" v-model="checkedNames">
+  <label for="jack">Jack</label>
+  <input type="checkbox" id="john" value="John" v-model="checkedNames">
+  <label for="john">John</label>
+  <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+  <label for="mike">Mike</label>
+  <br>
+  <span>Checked names: {{ checkedNames }}</span>
+</div>
+<script>
+  new Vue({
+    el: '#model-binding',
+    data: {
+      checkedNames: []
+    }
+  })
+</script>
+
+<div id="model-binding-2">
+  <select v-model="selected">
+    <option disabled value="">请选择</option>
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+  </select>
+  <span>Selected: {{ selected }}</span>
+</div>
+<script>
+  new Vue({
+    el: '#model-binding-2',
+    data: {
+      selected: ''
+    }
+  })
+</script>
+
+<DivGgg>
+  hijlm
+</DivGgg>
+
 </body>
 </html>
